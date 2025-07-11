@@ -52,7 +52,13 @@ extension IntPagingStateExtension<ItemType> on PagingState<int, ItemType> {
   /// Convenience method to get the next page key.
   ///
   /// Assumes that keys start at 1 and increment by 1.
-  int get nextIntPageKey => (keys?.lastOrNull ?? 0) + 1;
+  int get nextIntPageKey {
+    // For initial load (no keys yet)
+    if (keys == null || keys!.isEmpty) return 0;
+
+    // For subsequent loads
+    return keys!.last + 1;
+  }
 }
 
 /// Helper extensions to quickly access the state of a [PagingController].

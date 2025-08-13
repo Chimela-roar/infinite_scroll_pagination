@@ -5,17 +5,21 @@ import 'package:infinite_scroll_pagination/src/core/paging_state.dart';
 import 'package:infinite_scroll_pagination/src/base/paged_layout_builder.dart';
 
 class PagingListener<PageKeyType, ItemType> extends StatelessWidget {
-  const PagingListener({
+  PagingListener({
     super.key,
-    required this.controller,
+    PagingController<PageKeyType, ItemType>? controller,
     required this.builder,
-  });
+  }) : controller = controller ??
+            PagingController<PageKeyType, ItemType>(
+              getNextPageKey: (_) => null, // means no next page
+              fetchPage: (_) async => [], // returns empty list
+            );
 
   final PagingController<PageKeyType, ItemType> controller;
   final Widget Function(
     BuildContext context,
     PagingState<PageKeyType, ItemType> state,
-    NextPageCallback fetchNextPage,
+    void Function() fetchNextPage,
   ) builder;
 
   @override
@@ -30,3 +34,30 @@ class PagingListener<PageKeyType, ItemType> extends StatelessWidget {
     );
   }
 }
+
+// class PagingListener<PageKeyType, ItemType> extends StatelessWidget {
+//   const PagingListener({
+//     super.key,
+//     required this.controller,
+//     required this.builder,
+//   });
+//
+//   final PagingController<PageKeyType, ItemType> controller;
+//   final Widget Function(
+//       BuildContext context,
+//       PagingState<PageKeyType, ItemType> state,
+//       NextPageCallback fetchNextPage,
+//       ) builder;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ValueListenableBuilder<PagingState<PageKeyType, ItemType>>(
+//       valueListenable: controller,
+//       builder: (context, state, _) => builder(
+//         context,
+//         state,
+//         controller.fetchNextPage,
+//       ),
+//     );
+//   }
+// }
